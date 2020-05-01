@@ -1,0 +1,91 @@
+body {
+    font-family: serif;
+    background-image: linear-gradient(to right, #304f56 0%,#304f56 12.5%,#1c3e43 12.5%,#1c3e43 25%,#304e29 25%,#304e29 37.5%,#4f561c 37.5%,#4f561c 50%,#625618 50%,#625618 62.5%,#613814 62.5%,#613814 75%,#5d2a41 75%,#5d2a41 87.5%,#4c2742 87.5%);
+
+}
+
+.stripes {
+    background-image: linear-gradient(to right, #304f56 0%,#304f56 12.5%,#1c3e43 12.5%,#1c3e43 25%,#304e29 25%,#304e29 37.5%,#4f561c 37.5%,#4f561c 50%,#625618 50%,#625618 62.5%,#613814 62.5%,#613814 75%,#5d2a41 75%,#5d2a41 87.5%,#4c2742 87.5%);
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+.push-down {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top:40%;
+}
+
+[class*="col-"] {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgba(86, 61, 124, .15);
+  border: 1px solid rgba(86, 61, 124, .2);
+}
+
+@media (max-height: 700px) {
+  .mobile-hide {
+    display: none;
+    }
+}
+
+
+
+/* -------------------  */
+
+
+.push-down {
+    margin-top: -220px;
+}
+
+.btn-success {
+    margin-left: 40%;
+    margin-top: 2%;
+    width: 220px;
+}
+
+option {
+    background-color: #dfe6e9;
+}
+
+.selectpicker {
+    padding-left: 10px;
+}
+
+.bg-info {
+    background-image: linear-gradient(to right, #304f56 0%,#304f56 12.5%,#1c3e43 12.5%,#1c3e43 25%,#304e29 25%,#304e29 37.5%,#4f561c 37.5%,#4f561c 50%,#625618 50%,#625618 62.5%,#613814 62.5%,#613814 75%,#5d2a41 75%,#5d2a41 87.5%,#4c2742 87.5%);
+    margin-top: 10%;
+}
+
+ion-icon {
+    display: inline-block;
+    padding-top: -5px!important;
+}
+
+input {
+    display: none;
+}
+
+#next {
+    width: 100px;
+    margin-top: 20px;
+}
+
+#scoreHeader {
+    position: absolute;
+    margin-left: 43%;
+    margin-top: -70px;
+    font-weight: 600;
+}
+
+.category {
+    font-weight: 600;
+}
+
+.level {
+    font-weight: 600;
+}
