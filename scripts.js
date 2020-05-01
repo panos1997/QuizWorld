@@ -21,7 +21,6 @@ class Options {
 
         const res = await (await fetch(`https://opentdb.com/api.php?amount=${this.amount}&category=${this.category}&difficulty=${this.difficulty}&type=multiple`)).json();
 
-        //console.log(res);
 
         return res;
 
