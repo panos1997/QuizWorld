@@ -20,6 +20,8 @@ var lose = new Audio("lose.wav"); // buffers automatically when created
 
 
 
+
+
 class Options {
 
     constructor(amount, category, difficulty) {
@@ -32,7 +34,7 @@ class Options {
 
         const res = await (await fetch(`https://opentdb.com/api.php?amount=${this.amount}&category=${this.category}&difficulty=${this.difficulty}&type=multiple`)).json();
 
-        //console.log(res);
+        console.log(`https://opentdb.com/api.php?amount=${this.amount}&category=${this.category}&difficulty=${this.difficulty}&type=multiple`);
 
         return res;
 
@@ -140,18 +142,19 @@ var startFunc = async (event) => {
     });
 
     questions = questions[1];
-    //console.log("questions: " + JSON.stringify(questions));
 
     questions.forEach( (q, index) => {
         console.log(index + ": " + JSON.stringify(q));
 
         var title = q.question;
         var incorrectAnswers = q.incorrect_answers;
-        var correctAnswer = q.correct_answer;
+        var correctAnswer = decodeEntities(q.correct_answer);
         var category = q.category;
     
+
         var totalAnswers = [correctAnswer, ...incorrectAnswers];
     
+
         // index = 0-3 for multiple choice questions (they have 4 answers)
         var indexCorrect = Math.floor(Math.random() * totalAnswers.length);
         console.log('indexCorrect: ' + indexCorrect)
@@ -182,7 +185,15 @@ var startFunc = async (event) => {
 
 
     // add question to the UI
-    questionClassList[0].renderQuestion();
+         // check if there are any results returned
+         if(questionClassList[0] !== undefined) {
+            questionClassList[0].renderQuestion();
+         } else {
+            document.querySelector('body').innerHTML = indexBody;
+
+            restoreHandlers();
+         }
+        
 
 };
 
@@ -193,7 +204,7 @@ var nextFunc = (event) => {
    
     // render next question (if there is one) 
 
-    if(currentQuestion < questionClassList.length - 1) {
+    if(currentQuestion < questionClassList.length - 1 && currentChecked === true) {
         // update current question index
         
         currentQuestion++;
@@ -269,35 +280,42 @@ var checkAnswer = (event) => {
         document.querySelector('#score').textContent = `${score}/${data.amount}`;
         currentChecked = true;
 
-    };
 
-    console.log(currentQuestion);
-    console.log(data.amount);
-    console.log(currentChecked);
 
-    if(currentQuestion === data.amount - 1 && currentChecked === true) {
+        if(currentQuestion === data.amount - 1 && currentChecked === true) {
         
-        console.log(Math.floor((data.amount - 1) / 2 + 1));
-
-        if(score >= Math.floor((data.amount - 1) / 2 + 1)) {
-            document.querySelector('#score').style.color = "#2ecc71";
-        } else {
-            document.querySelector('#score').style.color = "#c0392b";
-        }
-
-        if(document.querySelector('#nextDiv') !== null) {
-            if(document.querySelector('#next') !== null) {
-                document.querySelector('#next').parentElement.removeChild(document.querySelector('#next'));
+            console.log(Math.floor((data.amount - 1) / 2 + 1));
+    
+            if(score >= Math.floor((data.amount - 1) / 2 + 1)) {
+                if(document.querySelector('#score') !== null) {
+                    document.querySelector('#score').style.color = "#2ecc71";
+                }
+            } else {
+                if(document.querySelector('#score') !== null) {
+                    document.querySelector('#score').style.color = "#c0392b";
+                }
             }
-            
-            document.querySelector("#nextDiv").innerHTML = `
-            <button id="playAgain" type="button" class="btn btn-huge">Play Again<span id="icon">  </span> </button>
-            `;
+    
+            if(document.querySelector('#nextDiv') !== null) {
+    
+                if(document.querySelector('#next') !== null) {
+                    document.querySelector('#next').parentElement.removeChild(document.querySelector('#next'));
+                }
+                
+                console.log("should not come here...")
+                console.log('data.amount = ' + data.amount);
+                console.log('currentQuestion = ' + currentQuestion)
+    
+                document.querySelector("#nextDiv").innerHTML = `
+                <button id="playAgain" type="button" class="btn btn-huge">Play Again<span id="icon">  </span> </button>
+                `;
+            } 
         }
-       
-        
-        
+
+
     }
+
+
 };
 
 var playAgain = (event) => {
@@ -324,16 +342,8 @@ var playAgain = (event) => {
         document.querySelector('body').innerHTML = "";
         document.querySelector('body').innerHTML = indexBody;
 
-        // restore event listeners for next round
-        document.querySelector('.btn-success').addEventListener('click', startFunc);
-        document.querySelector('#nextDiv').addEventListener('click', nextFunc);  
-        document.querySelector('body').addEventListener('click', checkAnswer);
-        categoryClick();
-        document.querySelector('#nextDiv').addEventListener('click', playAgain);
-        document.querySelector('.selectpicker').addEventListener('change', selectAmount);
-        levelClick();
-
-
+        // restore event listeners and select default options
+        restoreHandlers();
 
         // delete saved data
         questions = [];
@@ -490,6 +500,21 @@ var indexBody = `
 
 
 
+function restoreHandlers() {
+    // restore event listeners for next round
+    document.querySelector('.btn-success').addEventListener('click', startFunc);
+    document.querySelector('#nextDiv').addEventListener('click', nextFunc);  
+    document.querySelector('body').addEventListener('click', checkAnswer);
+    categoryClick();
+    document.querySelector('#nextDiv').addEventListener('click', playAgain);
+    document.querySelector('.selectpicker').addEventListener('change', selectAmount);
+    levelClick();
+
+    // click default options
+    document.querySelector('.category').click();
+    document.querySelector('.level').click();
+}
+
 
 // Audios for correct and wrong answer
 
@@ -525,3 +550,26 @@ function stopWinAudio() {
 function stopLoseAudio() {
     lose.pause();
 }
+
+
+// decode html entities
+
+var decodeEntities = (function() {
+    // this prevents any overhead from creating the object each time
+    var element = document.createElement('div');
+  
+    function decodeHTMLEntities (str) {
+      if(str && typeof str === 'string') {
+        // strip script/html tags
+        str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+        str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+        element.innerHTML = str;
+        str = element.textContent;
+        element.textContent = '';
+      }
+  
+      return str;
+    }
+  
+    return decodeHTMLEntities;
+  })();
