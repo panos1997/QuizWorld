@@ -207,8 +207,8 @@ var nextFunc = (event) => {
             win.pause();
             lose.pause();
 
-            win = new Audio("win.wav"); // buffers automatically when created
-            lose = new Audio("lose.wav"); // buffers automatically when created
+            win.currentTime = 0; // buffers automatically when created
+            lose.currentTime = 0; // buffers automatically when created
     
             console.log('event on the right button');
             
@@ -316,8 +316,8 @@ var playAgain = (event) => {
         win.pause();
         lose.pause();
 
-        win = new Audio("win.wav"); // buffers automatically when created
-        lose = new Audio("lose.wav"); // buffers automatically when created
+        win.currentTime = 0; 
+        lose.currentTime = 0; 
 
 
         // clear screen
@@ -495,6 +495,8 @@ var indexBody = `
 
 function playWinAudio() {
     
+    win.currentTime = 0;
+
     win.play();
 
     setTimeout(function(){
@@ -506,10 +508,20 @@ function playWinAudio() {
 
 function playLoseAudio() {
     
+    lose.currentTime = 0;
+
     lose.play();
 
     setTimeout(function(){
         lose.pause();
     },
     2500);    
+}
+
+function stopWinAudio() {
+    win.pause();
+}
+
+function stopLoseAudio() {
+    lose.pause();
 }
