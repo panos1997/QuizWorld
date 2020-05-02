@@ -227,6 +227,8 @@ var nextFunc = (event) => {
 
 }
 
+var children;
+
 var checkAnswer = (event) => {
     //console.log(event.target.classList.contains('choice'));
     
@@ -250,6 +252,18 @@ var checkAnswer = (event) => {
             playLoseAudio();
         
             event.target.style.backgroundColor = "#c0392b";
+
+            children = event.target.parentElement.querySelectorAll('.choice');
+
+            console.log('children: ' + Array.from(children))
+
+            Array.from(children).forEach( (child) => {
+                console.log(child);
+                if(child.textContent.replace(/^\s/, '') === JSON.stringify(questionClassList[currentQuestion].correctAnswer).replace(/["]/g, "")) {
+                    child.style.backgroundColor = "#2ecc71";
+                }
+            });
+
         }
 
         document.querySelector('#score').textContent = `${score}/${data.amount}`;
@@ -264,6 +278,7 @@ var checkAnswer = (event) => {
     if(currentQuestion === data.amount - 1 && currentChecked === true) {
         
         console.log(Math.floor((data.amount - 1) / 2 + 1));
+
         if(score >= Math.floor((data.amount - 1) / 2 + 1)) {
             document.querySelector('#score').style.color = "#2ecc71";
         } else {
